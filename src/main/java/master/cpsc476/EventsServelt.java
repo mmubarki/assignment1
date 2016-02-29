@@ -7,7 +7,9 @@ package master.cpsc476;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Collections;
@@ -108,9 +110,22 @@ public class EventsServelt extends HttpServlet {
     private void showEventForm(HttpServletRequest request,
             HttpServletResponse response)
             throws ServletException, IOException {
-
-        request.getRequestDispatcher("/WEB-INF/jsp/EventForm.jsp").
+        HttpSession session = request.getSession();
+        User user = (User)session.getAttribute("user");
+        if(user == null){
+            // user not login
+            session.setAttribute("message", "login before to show event form");
+            response.sendRedirect("Events?action=list");
+        }else{
+            LocalDate today = LocalDate.now();
+            LocalDate nextYeer = today.plus(1,ChronoUnit.YEARS);
+            System.out.print("today:"+today);
+            System.out.print("nextYeer:"+nextYeer);
+            request.setAttribute("minDate", today);
+            request.setAttribute("maxDate", nextYeer);
+            request.getRequestDispatcher("/WEB-INF/jsp/EventForm.jsp").
                 forward(request, response);
+        }
     }
 
     /**
@@ -129,7 +144,7 @@ public class EventsServelt extends HttpServlet {
             action = "list";
         switch(action)
         {
-            case "create":
+            case "createEvent":
                 this.createEvent(request, response);
                 break;
             case "createUser":
@@ -176,7 +191,8 @@ public class EventsServelt extends HttpServlet {
         this.usersCollection.put(user.getEmail(), user);
         
         Event event = new Event();
-        event.setDescription("event 1 : asdasdads");
+        event.setTitle("Summit Event Productions");
+        event.setDescription("We are a boutique lighting design production company based in the MD/DC/VA area");
         event.setLocation("2627 e la palma ave");
         event.setTime(LocalDateTime.parse("Jan 21,2017 13:00",event.getEventTimeFormat()));
         event.setCreatedBy(user.getId());
@@ -187,8 +203,9 @@ public class EventsServelt extends HttpServlet {
             this.eventsCollection.put(id, event);
         }
         event = new Event();
-        event.setDescription("event 2 : asdawe");
-        event.setLocation("2600 e la palma ave");
+        event.setTitle("Impulse Event Lighting");
+        event.setDescription("Have a Memorable Wedding with help from our experienced Lighting Technicians! Impulse Event Lighting works closely with our customers to ensure complete satisfaction. Click below and see what our previous customers have had to say");
+        event.setLocation("516 Cameron St, Placentia");
         event.setTime(LocalDateTime.parse("Dec 01,2016 11:30",event.getEventTimeFormat()));
         event.setCreatedBy(user.getId());
         synchronized(this){
@@ -225,23 +242,36 @@ public class EventsServelt extends HttpServlet {
 
     private void createEvent(HttpServletRequest request, HttpServletResponse response) 
                 throws ServletException, IOException {
-        
-        Event event = new Event();
-        event.setDescription(request.getParameter("description"));
-        event.setLocation(request.getParameter("location("));
-        event.setTime(LocalDateTime.parse(
-                    request.getParameter("time"),
-                    event.getEventTimeFormat()));
- 
-        long id;
-        synchronized(this)
-        {
-            id = this.eventsSequence++;
-            event.setId(id);
+        System.out.println("inside createEvent");
+        HttpSession session = request.getSession();
+        User user = (User)session.getAttribute("user");
+        System.out.println("inside createEvent user:"+user);
+        if(user == null){
+            // user not login
+            session.setAttribute("message", "login before to create events");
+            response.sendRedirect("Events?action=list");
+        }else{
+            Event event = new Event();
+            event.setTitle(request.getParameter("title"));
+            event.setDescription(request.getParameter("description"));
+            event.setLocation(request.getParameter("location"));
+            event.setTime(LocalDateTime.parse(
+                        request.getParameter("eventDateTime")));
+            event.setCreatedBy(user.getId());
+            long id;
+            synchronized(this)
+            {
+                id = this.eventsSequence++;
+                event.setId(id);
+                this.eventsCollection.put(id, event);
+            }
             this.eventsCollection.put(id, event);
+            session.setAttribute("message", "successfull created event:"+event.getTitle());
+            user.getCreatedEvents().add(event);
+            session.removeAttribute("user");
+            session.setAttribute("user", user);
+            response.sendRedirect("Events?action=view&eventId=" + id);
         }
-        response.sendRedirect("Events?action=view&eventId=" + id);
-
     }
     private void createUser(HttpServletRequest request, HttpServletResponse response) 
                 throws ServletException, IOException {
@@ -275,8 +305,9 @@ public class EventsServelt extends HttpServlet {
     private void showSignupForm(HttpServletRequest request, HttpServletResponse response) 
         throws ServletException,IOException{
             System.out.println("signup for :"+request.getParameter("email"));
-            request.getRequestDispatcher("/WEB-INF/jsp/SignupForm.jsp?email="+
-                    request.getParameter("email")).
+            request.setAttribute("email", request.getParameter("email"));
+            
+            request.getRequestDispatcher("/WEB-INF/jsp/SignupForm.jsp").
                 forward(request, response);    
     }
 
@@ -304,7 +335,7 @@ public class EventsServelt extends HttpServlet {
         if(user != null){
             user.setCreatedEvents(getCreatedEvents(user));
             session.setAttribute("user", user);
-            response.sendRedirect("Events?action=list");
+            response.sendRedirect("Events?action=userHome&userId="+user.getId());
         }else{
             session.setAttribute("message", "signin fail");
             response.sendRedirect("Events?action=list");
@@ -335,7 +366,7 @@ public class EventsServelt extends HttpServlet {
                 forward(request, response); 
         }
         else{
-            request.getSession().setAttribute("message","user not found" );
+            request.getSession().setAttribute("message","User not found" );
             response.sendRedirect("Events?action=list");
         }
     }
@@ -376,7 +407,7 @@ public class EventsServelt extends HttpServlet {
                user.getInterestedEvents().add(event);
                session.removeAttribute("user");
                session.setAttribute("user", user);
-               session.setAttribute("message", "event:"+event.getDescription()+" added to interested list");
+               session.setAttribute("message", "event:"+event.getTitle()+" added to interested list");
             }else{
                session.setAttribute("message", "event is not exist");
             }
@@ -411,7 +442,7 @@ public class EventsServelt extends HttpServlet {
                user.getInterestedEvents().remove(event);
                session.removeAttribute("user");
                session.setAttribute("user", user);
-               session.setAttribute("message", "event:"+event.getDescription()+" removed from interested list");
+               session.setAttribute("message", "event:"+event.getTitle()+" removed from interested list");
             }else{
                session.setAttribute("message", "event is not exist");
             }

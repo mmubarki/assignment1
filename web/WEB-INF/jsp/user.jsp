@@ -26,7 +26,7 @@
                         <c:param value="${event.getId()}" name="eventId"/>
                     </c:url>
                     <li> <a href='${viewEventUrl}'> 
-                            <c:out value="${event.getDescription()}"/> 
+                            <c:out value="${event.getTitle()}"/> 
                             in : <c:out value="${event.getTimeStr()}"/>               
                             at : <c:out value="${event.getLocation()}"/>
                         </a> 
@@ -53,8 +53,8 @@
                 <c:forEach items="${user.getCreatedEvents()}" var="event">
                     <c:url var="viewEventUrl" 
                            value='Events?action=view&eventId=${event.getId()}'/>
-                    <li> Event <a href='${viewEventUrl}'> 
-                            <c:out value="${event.getDescription()}"/> 
+                    <li>  <a href='${viewEventUrl}'> 
+                            <c:out value="${event.getTitle()}"/> 
                             in : <c:out value="${event.getTimeStr()}"/>               
                             at : <c:out value="${event.getLocation()}"/>
                         </a> </li>

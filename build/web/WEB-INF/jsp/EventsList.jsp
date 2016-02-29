@@ -12,25 +12,46 @@
     </head>
     <body>
 
-        <h1>Events List!</h1>
-        <c:url var="createEventUrl" value="Events">
-            <c:param name='action' value="create" /> 
-        </c:url>
-        <a href="${createEventUrl}"><c:out value="create event" /> </a><br>
-        Events<ul>
+        <h3>Events List</h3>
+        <c:if test="${user != null}" >
+            <c:url var="createEventUrl" value="Events">
+                <c:param name='action' value="create" /> 
+            </c:url>
+            <a href="${createEventUrl}"><c:out value="create event" /> </a><br><br>
+        </c:if>
         <c:choose>
-            <c:when test="${requestScope.eventsCollection != null}">
+            <c:when test="${requestScope.eventsCollection != null}">                            
+                <table border='0'>
+                    <thead class="Header">
+                        <tr>
+                            <th>Title</th>
+                            <th>Time</th>
+                            <th>Location</th>
+                            <th> </th>
+                        </tr>
+                    </thead>
+                
                 <c:forEach items="${eventsCollection}" var="event">
-                    <li>    <c:url var="viewEventUrl" value='Events'>
+                    <tr>
+                        <td>
+                            <c:url var="viewEventUrl" value='Events'>
                                 <c:param name="action" value="view"/>
                                 <c:param name="eventId" value="${event.value.getId()}"/>
                             </c:url>
-                     Event <a href='${viewEventUrl}'> 
-                            <c:out value="${event.value.getDescription()}"/> 
-                            in : <c:out value="${event.value.getTimeStr()}"/>               
-                            at : <c:out value="${event.value.getLocation()}"/>
+                            <a href='${viewEventUrl}'> 
+                            <c:out value="${event.value.getTitle()}"/>                
                             </a> 
-                            
+                            <input type="hidden" name='title' id='title' value="${event.value.getTitle()}"/>
+                            <input type="hidden" name='description' id='description' value="${event.value.getDescription()}"/>
+                          </td>
+                          <td>&ensp;&ensp;<c:out value="${event.value.getTimeStr()}"/>
+                              
+                            <input type="hidden" name='dateTime' id='dateTime' value="${event.value.getTimeStr()}"/>
+                          </td>
+                          <td>&ensp;&ensp;<c:out value="${event.value.getLocation()}"/>
+                              <input type="hidden" name='location' id='location' value="${event.value.getLocation()}"/>
+                          </td>
+                            <td>
                             <c:if test="${user != null &&
                                           user.getInterestedEvents() != null &&
                                            !user.getInterestedEvents().contains(event.value)}">
@@ -40,17 +61,28 @@
                                     <c:param name="userId" value="${user.getId()}"/>
                                     <c:param name="eventId" value="${event.value.getId()}"/>
                                 </c:url>
-                              &ensp;  <a href='${likeEventUrl}'> 
+                                &ensp;&ensp;
+                                <a href='${likeEventUrl}'> 
                                     <img src="public/like.png" alt="Like" width="15" height="15"/>
                                 </a>                                     
-                            </c:if>
-                    </li>
+                              </c:if>
+                              </td>
+                    </tr> 
                 </c:forEach>
-            </ul>
+                </table>
+                <hr>
+                <div id="map" style="width:500px;height:380px;"></div>
             </c:when>
             <c:otherwise>
                 there are no coming events
             </c:otherwise>
-        </c:choose>
+        </c:choose>                
+
+        <script src="public/jquery-2.0.3.min.js"></script>
+        <script src="public/gmaps.js" type="text/javascript"></script>
+        <script src="public/maps-googleapis.js" type="text/javascript"></script>
+        <script src="public/EventList.js" type="text/javascript"></script>
+        <script src="public/top.js"></script>
+        
     </body>
 </html>

@@ -15,6 +15,7 @@ import java.util.Date;
  */
 public class Event implements Comparable<Event>{
        private Long id=null;
+       private String title=null;
        private String description=null;
        private LocalDateTime time=null;
        private String location=null;
@@ -30,6 +31,14 @@ public class Event implements Comparable<Event>{
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getDescription() {
@@ -69,7 +78,7 @@ public class Event implements Comparable<Event>{
     
     @Override
     public String toString(){
-        return "event: "+this.getId()+" is:"+this.getDescription()
+        return "event: "+this.getId()+" is:"+this.getTitle()
                 + " In: "+this.getTimeStr()+" At:"+this.getLocation();
     }  
 
