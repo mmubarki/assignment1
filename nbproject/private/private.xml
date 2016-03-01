@@ -3,14 +3,9 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Volumes/SWAP/476/assignments/assignment1/src/java/master/cpsc476/EventsServelt.java</file>
-            <file>file:/Volumes/SWAP/476/assignments/assignment1/web/index.jsp</file>
-            <file>file:/Volumes/SWAP/476/assignments/assignment1/web/WEB-INF/jsp/SignupForm.jsp</file>
-            <file>file:/Volumes/SWAP/476/assignments/assignment1/src/java/master/cpsc476/Event.java</file>
-            <file>file:/Volumes/SWAP/476/assignments/assignment1/web/WEB-INF/jsp/EventsList.jsp</file>
-            <file>file:/Volumes/SWAP/476/assignments/assignment1/src/java/master/cpsc476/User.java</file>
-            <file>file:/Volumes/SWAP/476/assignments/assignment1/web/WEB-INF/jsp/EventView.jsp</file>
-            <file>file:/Volumes/SWAP/476/assignments/assignment1/web/WEB-INF/jsp/EventForm.jsp</file>
+            <file>file:/Volumes/SWAP/476/assignments/assignment1/pom.xml</file>
+            <file>file:/Volumes/SWAP/476/assignments/assignment1/src/main/java/master/cpsc476/EventsServelt.java</file>
+            <file>file:/Volumes/SWAP/476/assignments/assignment1/src/main/webapp/jsp/EventForm.jsp</file>
         </group>
     </open-files>
 </project-private>

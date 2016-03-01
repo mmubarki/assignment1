@@ -89,7 +89,7 @@ public class EventsServelt extends HttpServlet {
         //Collections.sort(this.eventsCollection.entrySet(), 
           //      (Event event1, Event event2) -> event1.getTime().compareTo(event2.getTime()));
         request.setAttribute("eventsCollection", this.eventsCollection);
-        request.getRequestDispatcher("/WEB-INF/jsp/EventsList.jsp").
+        request.getRequestDispatcher("/jsp/EventsList.jsp").
                 forward(request, response);
     }
 
@@ -103,7 +103,7 @@ public class EventsServelt extends HttpServlet {
         Event event = this.getEvent(eventId, response);
         if(event == null) return;
         request.setAttribute("event", event);
-        request.getRequestDispatcher("/WEB-INF/jsp/EventView.jsp").
+        request.getRequestDispatcher("/jsp/EventView.jsp").
                 forward(request, response);
     }
 
@@ -123,7 +123,7 @@ public class EventsServelt extends HttpServlet {
             System.out.print("nextYeer:"+nextYeer);
             request.setAttribute("minDate", today);
             request.setAttribute("maxDate", nextYeer);
-            request.getRequestDispatcher("/WEB-INF/jsp/EventForm.jsp").
+            request.getRequestDispatcher("/jsp/EventForm.jsp").
                 forward(request, response);
         }
     }
@@ -307,7 +307,7 @@ public class EventsServelt extends HttpServlet {
             System.out.println("signup for :"+request.getParameter("email"));
             request.setAttribute("email", request.getParameter("email"));
             
-            request.getRequestDispatcher("/WEB-INF/jsp/SignupForm.jsp").
+            request.getRequestDispatcher("/jsp/SignupForm.jsp").
                 forward(request, response);    
     }
 
@@ -362,7 +362,7 @@ public class EventsServelt extends HttpServlet {
         System.out.println("userId:"+userId);
         System.out.println("current user:"+user);
         if(user != null && user.getId().equals(userId)){
-            request.getRequestDispatcher("/WEB-INF/jsp/user.jsp").
+            request.getRequestDispatcher("/jsp/user.jsp").
                 forward(request, response); 
         }
         else{
