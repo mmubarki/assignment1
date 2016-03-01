@@ -9,10 +9,12 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -86,9 +88,27 @@ public class EventsServelt extends HttpServlet {
     private void listEvents(HttpServletRequest request,
             HttpServletResponse response)
             throws ServletException, IOException {
-        //Collections.sort(this.eventsCollection.entrySet(), 
-          //      (Event event1, Event event2) -> event1.getTime().compareTo(event2.getTime()));
-        request.setAttribute("eventsCollection", this.eventsCollection);
+        // filter old events
+        System.out.println("eventsCollection before remove old event :"+
+                this.eventsCollection);
+        /*
+        Map<Long,Event> filteredHashMap = this.eventsCollection.entrySet()
+            .parallelStream()
+            .filter(e -> (( (Event) e.getValue()).getTime().isAfter( LocalDateTime.now()) ))
+            .sorted((e1, e2) -> e1.getValue().compareTo(e2.getValue()))
+            .collect(Collectors.toMap(e->e.getKey(), e->e.getValue()));
+        System.out.println("filteredHashMap afetr remove old event and sort :"+filteredHashMap);
+        */
+        ArrayList<Event> filterSortedEvents =  new ArrayList<>(this.eventsCollection.values());
+        filterSortedEvents = filterSortedEvents
+                .parallelStream()
+                .filter(e -> (( (Event) e).getTime().isAfter( LocalDateTime.now()) ))
+                .sorted((e1, e2) -> e1.compareTo(e2))
+                .collect(Collectors.toCollection(ArrayList::new));
+        
+        System.out.println("filterSortedEvents :"+filterSortedEvents);
+        
+        request.setAttribute("eventsCollection", filterSortedEvents);
         request.getRequestDispatcher("/jsp/EventsList.jsp").
                 forward(request, response);
     }
@@ -267,7 +287,13 @@ public class EventsServelt extends HttpServlet {
             }
             this.eventsCollection.put(id, event);
             session.setAttribute("message", "successfull created event:"+event.getTitle());
-            user.getCreatedEvents().add(event);
+            //not add but recall getCreated
+            /*
+                simple add event to user ctreated list is produce unsorted list
+                user.getCreatedEvents().add(event);
+                
+            */
+            user.setCreatedEvents(getCreatedEvents(user));
             session.removeAttribute("user");
             session.setAttribute("user", user);
             response.sendRedirect("Events?action=view&eventId=" + id);
@@ -375,13 +401,12 @@ public class EventsServelt extends HttpServlet {
        
         ArrayList<Event> createdEvents =  new ArrayList<>(this.eventsCollection.values());
         createdEvents = createdEvents
-                .parallelStream().
-                filter(e -> (( (Event) e).getCreatedBy() == user.getId() ))
-                .sorted((e1, e2) -> e2.compareTo(e1))
+                .parallelStream()
+                .filter(e -> (( (Event) e).getCreatedBy() == user.getId() ))
+                .sorted((e1, e2) -> e1.compareTo(e2))
                 .collect(Collectors.toCollection(ArrayList::new));
         System.out.println("createdEvents :"+createdEvents);
         
-        //createdEvents.sort((e1, e2) -> e2.compareTo(e1));
         return createdEvents;
     }
 
@@ -405,6 +430,7 @@ public class EventsServelt extends HttpServlet {
             System.out.println("select event:"+event);
             if(event != null){
                user.getInterestedEvents().add(event);
+               user.getInterestedEvents().sort((e1, e2) -> e1.compareTo(e2));
                session.removeAttribute("user");
                session.setAttribute("user", user);
                session.setAttribute("message", "event:"+event.getTitle()+" added to interested list");

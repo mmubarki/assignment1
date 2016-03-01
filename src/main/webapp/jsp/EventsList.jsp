@@ -20,7 +20,8 @@
             <a href="${createEventUrl}"><c:out value="create event" /> </a><br><br>
         </c:if>
         <c:choose>
-            <c:when test="${requestScope.eventsCollection != null}">                            
+            <c:when test="${eventsCollection != null &&
+                            eventsCollection.size()>0}">                            
                 <table border='0'>
                     <thead class="Header">
                         <tr>
@@ -36,30 +37,30 @@
                         <td>
                             <c:url var="viewEventUrl" value='Events'>
                                 <c:param name="action" value="view"/>
-                                <c:param name="eventId" value="${event.value.getId()}"/>
+                                <c:param name="eventId" value="${event.getId()}"/>
                             </c:url>
                             <a href='${viewEventUrl}'> 
-                            <c:out value="${event.value.getTitle()}"/>                
+                            <c:out value="${event.getTitle()}"/>                
                             </a> 
-                            <input type="hidden" name='title' id='title' value="${event.value.getTitle()}"/>
-                            <input type="hidden" name='description' id='description' value="${event.value.getDescription()}"/>
+                            <input type="hidden" name='title' id='title' value="${event.getTitle()}"/>
+                            <input type="hidden" name='description' id='description' value="${event.getDescription()}"/>
                           </td>
-                          <td>&ensp;&ensp;<c:out value="${event.value.getTimeStr()}"/>
+                          <td>&ensp;&ensp;<c:out value="${event.getTimeStr()}"/>
                               
-                            <input type="hidden" name='dateTime' id='dateTime' value="${event.value.getTimeStr()}"/>
+                            <input type="hidden" name='dateTime' id='dateTime' value="${event.getTimeStr()}"/>
                           </td>
-                          <td>&ensp;&ensp;<c:out value="${event.value.getLocation()}"/>
-                              <input type="hidden" name='location' id='location' value="${event.value.getLocation()}"/>
+                          <td>&ensp;&ensp;<c:out value="${event.getLocation()}"/>
+                              <input type="hidden" name='location' id='location' value="${event.getLocation()}"/>
                           </td>
                             <td>
                             <c:if test="${user != null &&
                                           user.getInterestedEvents() != null &&
-                                           !user.getInterestedEvents().contains(event.value)}">
+                                           !user.getInterestedEvents().contains(event)}">
                                 
                                 <c:url var="likeEventUrl" value='Events'>
                                     <c:param name="action" value="likeEvent"/>
                                     <c:param name="userId" value="${user.getId()}"/>
-                                    <c:param name="eventId" value="${event.value.getId()}"/>
+                                    <c:param name="eventId" value="${event.getId()}"/>
                                 </c:url>
                                 &ensp;&ensp;
                                 <a href='${likeEventUrl}'> 
