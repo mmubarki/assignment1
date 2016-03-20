@@ -19,7 +19,12 @@ public class User {
     private String password = null;
     private List<Event> interestedEvents = null;
     private List<Event> createdEvents = null;
-
+    public User(){}
+    public User(Long id, String name, String email){
+        this.id = id;
+        this.name = name;
+        this.email = email;
+    }
     public Long getId() {
         return id;
     }
@@ -70,7 +75,7 @@ public class User {
     
     @Override
     public String toString(){
-        return "create user id:"+this.id+" name:"+this.name+" email:"+this.email;
+        return "user id:"+this.id+" name:"+this.name+" email:"+this.email;
     }
     
 }

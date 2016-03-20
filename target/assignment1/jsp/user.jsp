@@ -75,7 +75,8 @@
                        <c:param name="text" ><c:out value="${event.getTitle()}"/></c:param>
                        <c:param name="details" ><c:out value="${event.getDescription()}"/></c:param>
                        <c:param name="location" ><c:out value="${event.getLocation()}"/></c:param>
-                       <c:param name="dates" ><c:out value='${event.getTime().format( DateTimeFormatter.ofPattern("yyyyMMdd\'T\'HHmmss"))}/${event.getTime().format( DateTimeFormatter.ofPattern("yyyyMMdd\'T\'HHmmss"))}'/></c:param> 
+                       <c:param name="dates" >
+                           <c:out value='${event.getTime().format( DateTimeFormatter.ofPattern("yyyyMMdd\'T\'HHmmss"))}/${event.getTime().format( DateTimeFormatter.ofPattern("yyyyMMdd\'T\'HHmmss"))}'/></c:param> 
                   </c:url>
                    &ensp;&ensp; <a href="${addToCalendarUrl}" target="_blank">
                             <img src="public/googleCalendar.png" alt="add to google calendar" width="20" height="20"/>

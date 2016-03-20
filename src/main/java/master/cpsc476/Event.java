@@ -5,9 +5,11 @@
  */
 package master.cpsc476;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.Objects;
 
 /**
  *
@@ -20,6 +22,16 @@ public class Event implements Comparable<Event>{
        private LocalDateTime time=null;
        private String location=null;
        private Long createdBy =null;
+    public Event(){}   
+    public Event(Long id, String title, String description, 
+            String location, LocalDateTime time, Long createdBy) {
+       this.id=id;
+       this.title=title;
+       this.description=description;
+       this.time=time;
+       this.location=location;
+       this.createdBy =createdBy;
+    }
 
     public DateTimeFormatter getEventTimeFormat() {
         return DateTimeFormatter.ofPattern("MMM dd,yyyy HH:mm");
@@ -85,5 +97,21 @@ public class Event implements Comparable<Event>{
    @Override
     public int compareTo(Event otherEvent) {
         return this.getTime().compareTo( otherEvent.getTime());
+    }
+    
+    @Override
+    public boolean equals(Object object){
+        if (object instanceof Event){
+            Event otherEvent = (Event) object;
+            return otherEvent.id.equals( this.id);
+        }
+     return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 29 * hash + Objects.hashCode(this.id);
+        return hash;
     }
 }   
