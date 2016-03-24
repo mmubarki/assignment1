@@ -24,11 +24,11 @@
                 rows="4" cols="50" required  ></textarea><br/><br/>
             <span class="label">Time</span><br/>
             
-            <!--<input type="datetime-local" id="eventDateTime"  name="eventDateTime" required
-                     min="2016-03-01T00:00" max="2017-03-01T00:00" readonly> -->
+           <!-- <input type="datetime-local" id="eventDateTime"  name="eventDateTime" required
+                     min="2016-02-06T12:12:55" max="2016-02-16T21:25:33" readonly> -->
 
             <input type="datetime-local" name="eventDateTime" id="eventDateTime" required 
-                   min="${minDate}T00:00" max="${maxDate}T00:00"><br/><br/>
+                   min="${minDate}" max="${maxDate}"><br/><br/>
             <span class="label">Location</span><br/>
             <input type="text" name="location" id="location"  size="50"
                    placeholder="Location" required

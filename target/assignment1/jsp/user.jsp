@@ -35,27 +35,15 @@
                             <c:param value="${event.getId()}" name="eventId"/>
                             <c:param name="userId" value="${user.getId()}"/>        
                         </c:url>
-                   &ensp;&ensp;<a href="${unlikeEventUrl}">
-                                <img src="public/unlike.png" alt="Unlike" width="15" height="15"/>
-                         </a>
-                   <c:url var="addToCalendarUrl" value="http://www.google.com/calendar/event">
-                       <c:param name="action" value="TEMPLATE"/>
-                       <c:param name="text" ><c:out value="${event.getTitle()}"/></c:param>
-                       <c:param name="details" ><c:out value="${event.getDescription()}"/></c:param>
-                       <c:param name="location" ><c:out value="${event.getLocation()}"/></c:param>
-                       <c:param name="dates" ><c:out value='${event.getTime().format( DateTimeFormatter.ofPattern("yyyyMMdd\'T\'HHmmss"))}/${event.getTime().format( DateTimeFormatter.ofPattern("yyyyMMdd\'T\'HHmmss"))}'/></c:param> 
-                  </c:url>
-                   &ensp;&ensp; <a href="${addToCalendarUrl}" target="_blank">
-                            <img src="public/googleCalendar.png" alt="add to google calendar" width="20" height="20"/>
-                        </a>
-                        
+                             &ensp;<a href="${unlikeEventUrl}">
+                                <img src="public/unlike.png" alt="Unlike" width="15" height="15"/></a>
                     </li>
                 </c:forEach>
             </ul>
 
             </c:when>
             <c:otherwise>
-                You are not select any events.
+                You are not select any events
             </c:otherwise>
         </c:choose>
         <h4>Mine Events</h4>
@@ -69,6 +57,7 @@
                             <c:out value="${event.getTitle()}"/> 
                             in : <c:out value="${event.getTimeStr()}"/>               
                             at : <c:out value="${event.getLocation()}"/>
+<<<<<<< HEAD
                         </a> 
                         <c:url var="addToCalendarUrl" value="http://www.google.com/calendar/event">
                        <c:param name="action" value="TEMPLATE"/>
@@ -82,6 +71,9 @@
                             <img src="public/googleCalendar.png" alt="add to google calendar" width="20" height="20"/>
                         </a>
                     </li>
+=======
+                        </a> </li>
+>>>>>>> parent of 3792d5a... fixed order of events list in main page
                 </c:forEach>
                 </ul>
             </c:when>

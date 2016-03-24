@@ -12,12 +12,10 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -101,12 +99,19 @@ public class EventsServelt extends HttpServlet {
     private void listEvents(HttpServletRequest request,
             HttpServletResponse response)
             throws ServletException, IOException {
+<<<<<<< HEAD
         List<Event> eventsList = eventDAO.findAllEventsActive();
         System.out.println("eventsCollection :"+eventsList);
         
         
         request.setAttribute("eventsCollection", eventsList);
         request.getRequestDispatcher("/WEB-INF/jsp/EventsList.jsp").
+=======
+        //Collections.sort(this.eventsCollection.entrySet(), 
+          //      (Event event1, Event event2) -> event1.getTime().compareTo(event2.getTime()));
+        request.setAttribute("eventsCollection", this.eventsCollection);
+        request.getRequestDispatcher("/jsp/EventsList.jsp").
+>>>>>>> parent of 3792d5a... fixed order of events list in main page
                 forward(request, response);
     }
 
@@ -227,6 +232,7 @@ public class EventsServelt extends HttpServlet {
         HttpSession session = request.getSession();
         User user = (User)session.getAttribute("user");
         System.out.println("inside createEvent user:"+user);
+<<<<<<< HEAD
         
         Event event = new Event();
         event.setTitle(request.getParameter("title"));
@@ -241,6 +247,33 @@ public class EventsServelt extends HttpServlet {
             session.setAttribute("message", "ERROR: can't create events");
             request.getRequestDispatcher("/WEB-INF/jsp/EventForm.jsp").
                 forward(request, response);
+=======
+        if(user == null){
+            // user not login
+            session.setAttribute("message", "login before to create events");
+            response.sendRedirect("Events?action=list");
+        }else{
+            Event event = new Event();
+            event.setTitle(request.getParameter("title"));
+            event.setDescription(request.getParameter("description"));
+            event.setLocation(request.getParameter("location"));
+            event.setTime(LocalDateTime.parse(
+                        request.getParameter("eventDateTime")));
+            event.setCreatedBy(user.getId());
+            long id;
+            synchronized(this)
+            {
+                id = this.eventsSequence++;
+                event.setId(id);
+                this.eventsCollection.put(id, event);
+            }
+            this.eventsCollection.put(id, event);
+            session.setAttribute("message", "successfull created event:"+event.getTitle());
+            user.getCreatedEvents().add(event);
+            session.removeAttribute("user");
+            session.setAttribute("user", user);
+            response.sendRedirect("Events?action=view&eventId=" + id);
+>>>>>>> parent of 3792d5a... fixed order of events list in main page
         }
         session.setAttribute("message", "successfull created event:"+event.getTitle());
         //not add but recall getCreated
@@ -373,6 +406,23 @@ public class EventsServelt extends HttpServlet {
         }
     }
 
+<<<<<<< HEAD
+=======
+    private List<Event> getCreatedEvents(User user) {
+       
+        ArrayList<Event> createdEvents =  new ArrayList<>(this.eventsCollection.values());
+        createdEvents = createdEvents
+                .parallelStream().
+                filter(e -> (( (Event) e).getCreatedBy() == user.getId() ))
+                .sorted((e1, e2) -> e2.compareTo(e1))
+                .collect(Collectors.toCollection(ArrayList::new));
+        System.out.println("createdEvents :"+createdEvents);
+        
+        //createdEvents.sort((e1, e2) -> e2.compareTo(e1));
+        return createdEvents;
+    }
+
+>>>>>>> parent of 3792d5a... fixed order of events list in main page
     private void likeEvent(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException,IOException{
         System.out.println("inside likeEvent");
@@ -392,6 +442,7 @@ public class EventsServelt extends HttpServlet {
             Event event = eventDAO.findById(eventId);
             System.out.println("select event:"+event);
             if(event != null){
+<<<<<<< HEAD
                 if(userDAO.likeEvent(user, eventId)){
                     user.getInterestedEvents().add(event);
                     user.getInterestedEvents().sort((e1, e2) -> e1.compareTo(e2));
@@ -399,6 +450,12 @@ public class EventsServelt extends HttpServlet {
                     session.setAttribute("user", user);
                     session.setAttribute("message", "event:"+event.getTitle()+" added to interested list");
                 }
+=======
+               user.getInterestedEvents().add(event);
+               session.removeAttribute("user");
+               session.setAttribute("user", user);
+               session.setAttribute("message", "event:"+event.getTitle()+" added to interested list");
+>>>>>>> parent of 3792d5a... fixed order of events list in main page
             }else{
                session.setAttribute("message", "event is not exist");
             }
